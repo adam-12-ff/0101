@@ -198,110 +198,110 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1 container py-8 md:py-12">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div className="lg:col-span-2 grid gap-8 content-start">
-            <Card className="shadow-sm transition-shadow hover:shadow-md">
-              <CardHeader>
-                <CardTitle className="font-headline text-2xl tracking-wide">Binary to Decimal</CardTitle>
-                <CardDescription>Enter a binary number to see its decimal equivalent.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="binary-input" className="text-sm font-medium">Binary Number</Label>
-                  <Input id="binary-input" placeholder="e.g., 101101" value={binaryInput} onChange={handleBinaryChange} className={binaryError ? 'border-destructive focus-visible:ring-destructive' : ''} />
-                  {binaryError && <p className="text-sm text-destructive">{binaryError}</p>}
-                </div>
-                 <div className="flex items-center justify-center">
-                    <Button onClick={convertBinaryToDecimal}>कन्वर्ट करें</Button>
-                </div>
-                 <div className="space-y-2">
-                  <Label htmlFor="decimal-output" className="text-sm font-medium">Decimal Result</Label>
-                   <div className="flex gap-2">
-                      <Input id="decimal-output" value={decimalOutput} readOnly placeholder="Result appears here" className="font-mono bg-muted/50" />
-                      <Button variant="outline" size="icon" onClick={() => copyToClipboard(decimalOutput, 'dec_out')} disabled={!decimalOutput}>
-                        {copied === 'dec_out' ? <ClipboardCheck className="h-4 w-4 text-primary" /> : <Clipboard className="h-4 w-4" />}
-                      </Button>
-                   </div>
-                </div>
-              </CardContent>
-              {binaryExplanation.length > 0 && (
-                  <CardFooter className="flex-col items-start gap-2 pt-4 border-t">
-                      <h3 className="font-semibold">तरीका (Method):</h3>
-                      <div className="text-sm text-muted-foreground space-y-1">
-                          {binaryExplanation.map((step, index) => <p key={index}>{step}</p>)}
-                      </div>
-                  </CardFooter>
-              )}
-            </Card>
-
-            <Card className="shadow-sm transition-shadow hover:shadow-md">
-              <CardHeader>
-                <CardTitle className="font-headline text-2xl tracking-wide">Decimal to Binary</CardTitle>
-                <CardDescription>Enter a decimal number to see its binary equivalent.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="decimal-input" className="text-sm font-medium">Decimal Number</Label>
-                  <Input id="decimal-input" placeholder="e.g., 45" value={decimalInput} onChange={handleDecimalChange} className={decimalError ? 'border-destructive focus-visible:ring-destructive' : ''} />
-                  {decimalError && <p className="text-sm text-destructive">{decimalError}</p>}
-                </div>
-                <div className="flex items-center justify-center">
-                    <Button onClick={convertDecimalToBinary}>कन्वर्ट करें</Button>
-                </div>
-                 <div className="space-y-2">
-                  <Label htmlFor="binary-output" className="text-sm font-medium">Binary Result</Label>
-                  <div className="flex gap-2">
-                    <Input id="binary-output" value={binaryOutput} readOnly placeholder="Result appears here" className="font-mono bg-muted/50" />
-                    <Button variant="outline" size="icon" onClick={() => copyToClipboard(binaryOutput, 'bin_out')} disabled={!binaryOutput}>
-                         {copied === 'bin_out' ? <ClipboardCheck className="h-4 w-4 text-primary" /> : <Clipboard className="h-4 w-4" />}
-                      </Button>
-                  </div>
-                </div>
-              </CardContent>
-              {decimalExplanation.length > 0 && (
-                  <CardFooter className="flex-col items-start gap-2 pt-4 border-t">
-                      <h3 className="font-semibold">तरीका (Method):</h3>
-                      <div className="text-sm text-muted-foreground space-y-1">
-                          {decimalExplanation.map((step, index) => <p key={index}>{step}</p>)}
-                      </div>
-                  </CardFooter>
-              )}
-            </Card>
-          </div>
-
-          <Card className="lg:col-span-1 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="font-headline text-2xl tracking-wide">History</CardTitle>
-              <Button variant="ghost" size="icon" onClick={clearHistory} disabled={history.length === 0}>
-                  <Trash2 className="h-4 w-4 text-muted-foreground"/>
-                  <span className="sr-only">Clear History</span>
-              </Button>
-            </CardHeader>
-            <CardContent>
-                {history.length > 0 ? (
-                    <ScrollArea className="h-[460px] pr-4">
-                        <div className="space-y-4">
-                        {history.map((item) => (
-                            <div key={item.id} className="text-sm">
-                                <p className="font-medium">{item.type === 'B→D' ? 'Binary → Decimal' : 'Decimal → Binary'}</p>
-                                <div className="flex items-center gap-2 text-muted-foreground font-mono text-xs">
-                                    <span className="truncate">{item.input}</span>
-                                    <ArrowRight className="h-3 w-3 shrink-0" />
-                                    <span className="truncate">{item.output}</span>
-                                </div>
-                            </div>
-                        ))}
+        <div className="grid gap-8 lg:grid-cols-3">
+            <div className="lg:col-span-2 grid gap-8 content-start">
+                <Card className="shadow-sm transition-shadow hover:shadow-md">
+                    <CardHeader>
+                        <CardTitle className="font-headline text-2xl tracking-wide">Binary to Decimal</CardTitle>
+                        <CardDescription>Enter a binary number to see its decimal equivalent.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                        <Label htmlFor="binary-input" className="text-sm font-medium">Binary Number</Label>
+                        <Input id="binary-input" placeholder="e.g., 101101" value={binaryInput} onChange={handleBinaryChange} className={binaryError ? 'border-destructive focus-visible:ring-destructive' : ''} />
+                        {binaryError && <p className="text-sm text-destructive">{binaryError}</p>}
                         </div>
-                    </ScrollArea>
-                ) : (
-                    <div className="flex flex-col items-center justify-center h-[460px] text-center text-muted-foreground/80 space-y-2">
-                        <HistoryIcon className="h-10 w-10 mb-2"/>
-                        <p className="font-medium">No conversions yet</p>
-                        <p className="text-xs">Your conversion history will show up here.</p>
-                    </div>
-                )}
-            </CardContent>
-          </Card>
+                        <div className="flex items-center justify-center">
+                            <Button onClick={convertBinaryToDecimal}>कन्वर्ट करें</Button>
+                        </div>
+                        <div className="space-y-2">
+                        <Label htmlFor="decimal-output" className="text-sm font-medium">Decimal Result</Label>
+                        <div className="flex gap-2">
+                            <Input id="decimal-output" value={decimalOutput} readOnly placeholder="Result appears here" className="font-mono bg-muted/50" />
+                            <Button variant="outline" size="icon" onClick={() => copyToClipboard(decimalOutput, 'dec_out')} disabled={!decimalOutput}>
+                                {copied === 'dec_out' ? <ClipboardCheck className="h-4 w-4 text-primary" /> : <Clipboard className="h-4 w-4" />}
+                            </Button>
+                        </div>
+                        </div>
+                    </CardContent>
+                    {binaryExplanation.length > 0 && (
+                        <CardFooter className="flex-col items-start gap-2 pt-4 border-t">
+                            <h3 className="font-semibold">तरीका (Method):</h3>
+                            <div className="text-sm text-muted-foreground space-y-1">
+                                {binaryExplanation.map((step, index) => <p key={index}>{step}</p>)}
+                            </div>
+                        </CardFooter>
+                    )}
+                </Card>
+
+                <Card className="shadow-sm transition-shadow hover:shadow-md">
+                    <CardHeader>
+                        <CardTitle className="font-headline text-2xl tracking-wide">Decimal to Binary</CardTitle>
+                        <CardDescription>Enter a decimal number to see its binary equivalent.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                        <Label htmlFor="decimal-input" className="text-sm font-medium">Decimal Number</Label>
+                        <Input id="decimal-input" placeholder="e.g., 45" value={decimalInput} onChange={handleDecimalChange} className={decimalError ? 'border-destructive focus-visible:ring-destructive' : ''} />
+                        {decimalError && <p className="text-sm text-destructive">{decimalError}</p>}
+                        </div>
+                        <div className="flex items-center justify-center">
+                            <Button onClick={convertDecimalToBinary}>कन्वर्ट करें</Button>
+                        </div>
+                        <div className="space-y-2">
+                        <Label htmlFor="binary-output" className="text-sm font-medium">Binary Result</Label>
+                        <div className="flex gap-2">
+                            <Input id="binary-output" value={binaryOutput} readOnly placeholder="Result appears here" className="font-mono bg-muted/50" />
+                            <Button variant="outline" size="icon" onClick={() => copyToClipboard(binaryOutput, 'bin_out')} disabled={!binaryOutput}>
+                                {copied === 'bin_out' ? <ClipboardCheck className="h-4 w-4 text-primary" /> : <Clipboard className="h-4 w-4" />}
+                            </Button>
+                        </div>
+                        </div>
+                    </CardContent>
+                    {decimalExplanation.length > 0 && (
+                        <CardFooter className="flex-col items-start gap-2 pt-4 border-t">
+                            <h3 className="font-semibold">तरीका (Method):</h3>
+                            <div className="text-sm text-muted-foreground space-y-1">
+                                {decimalExplanation.map((step, index) => <p key={index}>{step}</p>)}
+                            </div>
+                        </CardFooter>
+                    )}
+                </Card>
+            </div>
+
+            <Card className="lg:col-span-1 shadow-sm">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="font-headline text-2xl tracking-wide">History</CardTitle>
+                <Button variant="ghost" size="icon" onClick={clearHistory} disabled={history.length === 0}>
+                    <Trash2 className="h-4 w-4 text-muted-foreground"/>
+                    <span className="sr-only">Clear History</span>
+                </Button>
+                </CardHeader>
+                <CardContent>
+                    {history.length > 0 ? (
+                        <ScrollArea className="h-[460px] pr-4">
+                            <div className="space-y-4">
+                            {history.map((item) => (
+                                <div key={item.id} className="text-sm">
+                                    <p className="font-medium">{item.type === 'B→D' ? 'Binary → Decimal' : 'Decimal → Binary'}</p>
+                                    <div className="flex items-center gap-2 text-muted-foreground font-mono text-xs">
+                                        <span className="truncate">{item.input}</span>
+                                        <ArrowRight className="h-3 w-3 shrink-0" />
+                                        <span className="truncate">{item.output}</span>
+                                    </div>
+                                </div>
+                            ))}
+                            </div>
+                        </ScrollArea>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center h-[460px] text-center text-muted-foreground/80 space-y-2">
+                            <HistoryIcon className="h-10 w-10 mb-2"/>
+                            <p className="font-medium">No conversions yet</p>
+                            <p className="text-xs">Your conversion history will show up here.</p>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
         </div>
       </main>
     </div>
