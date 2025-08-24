@@ -327,7 +327,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background">
+    <div className="flex min-h-screen w-full flex-col items-center bg-background">
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
@@ -341,7 +341,7 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1 container py-8 md:py-12">
-        <Tabs defaultValue="converter" className="w-full">
+        <Tabs defaultValue="converter" className="w-full max-w-4xl">
             <TabsList className="grid w-full grid-cols-2 mb-8">
                 <TabsTrigger value="converter">कनवर्टर</TabsTrigger>
                 <TabsTrigger value="test">Test Zone</TabsTrigger>
