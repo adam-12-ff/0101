@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -20,10 +20,12 @@ export default function Home() {
   const [binaryInput, setBinaryInput] = useState('');
   const [decimalOutput, setDecimalOutput] = useState('');
   const [binaryError, setBinaryError] = useState('');
+  const [binaryExplanation, setBinaryExplanation] = useState<string[]>([]);
 
   const [decimalInput, setDecimalInput] = useState('');
   const [binaryOutput, setBinaryOutput] = useState('');
   const [decimalError, setDecimalError] = useState('');
+  const [decimalExplanation, setDecimalExplanation] = useState<string[]>([]);
 
   const [history, setHistory] = useState<ConversionRecord[]>([]);
   const [isMounted, setIsMounted] = useState(false);
@@ -80,6 +82,7 @@ export default function Home() {
   const handleBinaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setBinaryInput(value);
+    setBinaryExplanation([]);
 
     if (value === '') {
       setDecimalOutput('');
@@ -95,12 +98,28 @@ export default function Home() {
       const decimalValue = parseInt(value, 2).toString();
       setDecimalOutput(decimalValue);
       addToHistory('B→D', value, decimalValue);
+
+      const explanationSteps: string[] = [];
+      explanationSteps.push(`बाइनरी नंबर (${value}) को बदलने के लिए, प्रत्येक अंक को 2 की घात से गुणा करें, दाईं ओर से शुरू करते हुए (2^0 से)।`);
+      
+      const steps = value.split('').reverse().map((bit, index) => {
+          return `${bit} × 2^${index} = ${bit} × ${Math.pow(2, index)} = ${parseInt(bit) * Math.pow(2, index)}`;
+      }).reverse();
+      explanationSteps.push(`गणना: ${steps.join('  +  ')}`);
+
+      const sum = value.split('').reverse().reduce((acc, bit, index) => {
+          return acc + parseInt(bit) * Math.pow(2, index);
+      }, 0);
+      explanationSteps.push(`परिणामों को जोड़ें: ${sum}`);
+      explanationSteps.push(`तो, बाइनरी ${value} का दशमलव मान ${sum} है।`);
+      setBinaryExplanation(explanationSteps);
     }
   };
 
   const handleDecimalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setDecimalInput(value);
+    setDecimalExplanation([]);
 
     if (value === '') {
       setBinaryOutput('');
@@ -113,9 +132,31 @@ export default function Home() {
       setBinaryOutput('');
     } else {
       setDecimalError('');
-      const binaryValue = parseInt(value, 10).toString(2);
+      const intValue = parseInt(value, 10);
+      const binaryValue = intValue.toString(2);
       setBinaryOutput(binaryValue);
       addToHistory('D→B', value, binaryValue);
+
+      if (intValue === 0) {
+        setDecimalExplanation([`दशमलव 0 बाइनरी में 0 है।`]);
+        return;
+      }
+
+      const explanationSteps: string[] = [];
+      explanationSteps.push(`दशमलव नंबर (${value}) को बाइनरी में बदलने के लिए, इसे 2 से तब तक भाग दें जब तक कि भागफल 0 न हो जाए, और प्रत्येक चरण में शेष को नोट करें।`);
+      
+      let num = intValue;
+      let remainders: number[] = [];
+      while(num > 0) {
+        const remainder = num % 2;
+        explanationSteps.push(`${num} ÷ 2 = ${Math.floor(num/2)} (शेष: ${remainder})`);
+        remainders.push(remainder);
+        num = Math.floor(num/2);
+      }
+
+      explanationSteps.push(`शेष को उल्टे क्रम में पढ़ें: ${remainders.reverse().join('')}`);
+      explanationSteps.push(`तो, दशमलव ${value} का बाइनरी मान ${binaryValue} है।`);
+      setDecimalExplanation(explanationSteps);
     }
   };
   
@@ -176,6 +217,14 @@ export default function Home() {
                    </div>
                 </div>
               </CardContent>
+              {binaryExplanation.length > 0 && (
+                  <CardFooter className="flex-col items-start gap-2 pt-4 border-t">
+                      <h3 className="font-semibold">तरीका (Method):</h3>
+                      <div className="text-sm text-muted-foreground space-y-1">
+                          {binaryExplanation.map((step, index) => <p key={index}>{step}</p>)}
+                      </div>
+                  </CardFooter>
+              )}
             </Card>
 
             <Card className="shadow-sm transition-shadow hover:shadow-md">
@@ -202,6 +251,14 @@ export default function Home() {
                   </div>
                 </div>
               </CardContent>
+              {decimalExplanation.length > 0 && (
+                  <CardFooter className="flex-col items-start gap-2 pt-4 border-t">
+                      <h3 className="font-semibold">तरीका (Method):</h3>
+                      <div className="text-sm text-muted-foreground space-y-1">
+                          {decimalExplanation.map((step, index) => <p key={index}>{step}</p>)}
+                      </div>
+                  </CardFooter>
+              )}
             </Card>
           </div>
 
@@ -243,3 +300,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
