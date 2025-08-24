@@ -80,85 +80,92 @@ export default function Home() {
   }
 
   const handleBinaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/[^01]/g, '');
     setBinaryInput(value);
+    setBinaryError('');
+    setDecimalOutput('');
     setBinaryExplanation([]);
-
-    if (value === '') {
-      setDecimalOutput('');
-      setBinaryError('');
-      return;
-    }
-
-    if (!/^[01]+$/.test(value)) {
-      setBinaryError('Invalid binary number. Only 0 and 1 are allowed.');
-      setDecimalOutput('');
-    } else {
-      setBinaryError('');
-      const decimalValue = parseInt(value, 2).toString();
-      setDecimalOutput(decimalValue);
-      addToHistory('B→D', value, decimalValue);
-
-      const explanationSteps: string[] = [];
-      explanationSteps.push(`बाइनरी नंबर (${value}) को बदलने के लिए, प्रत्येक अंक को 2 की घात से गुणा करें, दाईं ओर से शुरू करते हुए (2^0 से)।`);
-      
-      const steps = value.split('').reverse().map((bit, index) => {
-          return `${bit} × 2^${index} = ${bit} × ${Math.pow(2, index)} = ${parseInt(bit) * Math.pow(2, index)}`;
-      }).reverse();
-      explanationSteps.push(`गणना: ${steps.join('  +  ')}`);
-
-      const sum = value.split('').reverse().reduce((acc, bit, index) => {
-          return acc + parseInt(bit) * Math.pow(2, index);
-      }, 0);
-      explanationSteps.push(`परिणामों को जोड़ें: ${sum}`);
-      explanationSteps.push(`तो, बाइनरी ${value} का दशमलव मान ${sum} है।`);
-      setBinaryExplanation(explanationSteps);
-    }
   };
 
-  const handleDecimalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setDecimalInput(value);
-    setDecimalExplanation([]);
+  const convertBinaryToDecimal = () => {
+    if (binaryInput === '') {
+      setBinaryError('कृपया एक बाइनरी नंबर दर्ज करें।');
+      setDecimalOutput('');
+      return;
+    }
+    if (!/^[01]+$/.test(binaryInput)) {
+      setBinaryError('अमान्य बाइनरी नंबर। केवल 0 और 1 की अनुमति है।');
+      setDecimalOutput('');
+      return;
+    }
+    setBinaryError('');
+    const decimalValue = parseInt(binaryInput, 2).toString();
+    setDecimalOutput(decimalValue);
+    addToHistory('B→D', binaryInput, decimalValue);
 
-    if (value === '') {
+    const explanationSteps: string[] = [];
+    explanationSteps.push(`बाइनरी नंबर (${binaryInput}) को बदलने के लिए, प्रत्येक अंक को 2 की घात से गुणा करें, दाईं ओर से शुरू करते हुए (2^0 से)।`);
+    
+    const steps = binaryInput.split('').reverse().map((bit, index) => {
+        return `${bit} × 2^${index} = ${bit} × ${Math.pow(2, index)} = ${parseInt(bit) * Math.pow(2, index)}`;
+    }).reverse();
+    explanationSteps.push(`गणना: ${steps.join('  +  ')}`);
+
+    const sum = binaryInput.split('').reverse().reduce((acc, bit, index) => {
+        return acc + parseInt(bit) * Math.pow(2, index);
+    }, 0);
+    explanationSteps.push(`परिणामों को जोड़ें: ${sum}`);
+    explanationSteps.push(`तो, बाइनरी ${binaryInput} का दशमलव मान ${sum} है।`);
+    setBinaryExplanation(explanationSteps);
+  }
+
+  const handleDecimalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    setDecimalInput(value);
+    setDecimalError('');
+    setBinaryOutput('');
+    setDecimalExplanation([]);
+  };
+
+  const convertDecimalToBinary = () => {
+    if(decimalInput === '') {
+      setDecimalError('कृपया एक दशमलव संख्या दर्ज करें।');
       setBinaryOutput('');
-      setDecimalError('');
+      return;
+    }
+    if (!/^\d+$/.test(decimalInput)) {
+      setDecimalError('अमान्य दशमलव संख्या। केवल अंकों की अनुमति है।');
+      setBinaryOutput('');
       return;
     }
     
-    if (!/^\d+$/.test(value)) {
-      setDecimalError('Invalid decimal number. Only digits are allowed.');
-      setBinaryOutput('');
-    } else {
-      setDecimalError('');
-      const intValue = parseInt(value, 10);
-      const binaryValue = intValue.toString(2);
-      setBinaryOutput(binaryValue);
-      addToHistory('D→B', value, binaryValue);
+    setDecimalError('');
+    const intValue = parseInt(decimalInput, 10);
+    const binaryValue = intValue.toString(2);
+    setBinaryOutput(binaryValue);
+    addToHistory('D→B', decimalInput, binaryValue);
 
-      if (intValue === 0) {
-        setDecimalExplanation([`दशमलव 0 बाइनरी में 0 है।`]);
-        return;
-      }
-
-      const explanationSteps: string[] = [];
-      explanationSteps.push(`दशमलव नंबर (${value}) को बाइनरी में बदलने के लिए, इसे 2 से तब तक भाग दें जब तक कि भागफल 0 न हो जाए, और प्रत्येक चरण में शेष को नोट करें।`);
-      
-      let num = intValue;
-      let remainders: number[] = [];
-      while(num > 0) {
-        const remainder = num % 2;
-        explanationSteps.push(`${num} ÷ 2 = ${Math.floor(num/2)} (शेष: ${remainder})`);
-        remainders.push(remainder);
-        num = Math.floor(num/2);
-      }
-
-      explanationSteps.push(`शेष को उल्टे क्रम में पढ़ें: ${remainders.reverse().join('')}`);
-      explanationSteps.push(`तो, दशमलव ${value} का बाइनरी मान ${binaryValue} है।`);
-      setDecimalExplanation(explanationSteps);
+    if (intValue === 0) {
+      setDecimalExplanation([`दशमलव 0 बाइनरी में 0 है।`]);
+      return;
     }
-  };
+
+    const explanationSteps: string[] = [];
+    explanationSteps.push(`दशमलव नंबर (${decimalInput}) को बाइनरी में बदलने के लिए, इसे 2 से तब तक भाग दें जब तक कि भागफल 0 न हो जाए, और प्रत्येक चरण में शेष को नोट करें।`);
+    
+    let num = intValue;
+    let remainders: number[] = [];
+    while(num > 0) {
+      const remainder = num % 2;
+      explanationSteps.push(`${num} ÷ 2 = ${Math.floor(num/2)} (शेष: ${remainder})`);
+      remainders.push(remainder);
+      num = Math.floor(num/2);
+    }
+
+    explanationSteps.push(`शेष को उल्टे क्रम में पढ़ें: ${remainders.reverse().join('')}`);
+    explanationSteps.push(`तो, दशमलव ${decimalInput} का बाइनरी मान ${binaryValue} है।`);
+    setDecimalExplanation(explanationSteps);
+  }
   
   const copyToClipboard = (text: string, id: string) => {
     if (!text) return;
@@ -201,11 +208,11 @@ export default function Home() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="binary-input" className="text-sm font-medium">Binary Number</Label>
-                  <Input id="binary-input" placeholder="e.g., 101101" value={binaryInput} onChange={handleBinaryChange} className={binaryError ? 'border-destructive focus-visible:ring-destructive' : ''} inputMode="numeric" />
+                  <Input id="binary-input" placeholder="e.g., 101101" value={binaryInput} onChange={handleBinaryChange} className={binaryError ? 'border-destructive focus-visible:ring-destructive' : ''} />
                   {binaryError && <p className="text-sm text-destructive">{binaryError}</p>}
                 </div>
-                <div className="flex items-center justify-center text-muted-foreground">
-                    <ArrowRight className="h-5 w-5"/>
+                 <div className="flex items-center justify-center">
+                    <Button onClick={convertBinaryToDecimal}>कन्वर्ट करें</Button>
                 </div>
                  <div className="space-y-2">
                   <Label htmlFor="decimal-output" className="text-sm font-medium">Decimal Result</Label>
@@ -235,11 +242,11 @@ export default function Home() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="decimal-input" className="text-sm font-medium">Decimal Number</Label>
-                  <Input id="decimal-input" placeholder="e.g., 45" value={decimalInput} onChange={handleDecimalChange} className={decimalError ? 'border-destructive focus-visible:ring-destructive' : ''} type="text" inputMode="numeric"/>
+                  <Input id="decimal-input" placeholder="e.g., 45" value={decimalInput} onChange={handleDecimalChange} className={decimalError ? 'border-destructive focus-visible:ring-destructive' : ''} />
                   {decimalError && <p className="text-sm text-destructive">{decimalError}</p>}
                 </div>
-                <div className="flex items-center justify-center text-muted-foreground">
-                    <ArrowRight className="h-5 w-5"/>
+                <div className="flex items-center justify-center">
+                    <Button onClick={convertDecimalToBinary}>कन्वर्ट करें</Button>
                 </div>
                  <div className="space-y-2">
                   <Label htmlFor="binary-output" className="text-sm font-medium">Binary Result</Label>
@@ -300,5 +307,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
